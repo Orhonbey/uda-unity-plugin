@@ -1,0 +1,47 @@
+{
+  "MonoBehaviour": {
+    "namespace": "UnityEngine",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/MonoBehaviour.html",
+    "versions": ["2021.3+"]
+  },
+  "Component": {
+    "namespace": "UnityEngine",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Component.html",
+    "versions": ["2021.3+"]
+  },
+  "GameObject": {
+    "namespace": "UnityEngine",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/GameObject.html",
+    "versions": ["2021.3+"]
+  },
+  "ObjectPool<T>": {
+    "namespace": "UnityEngine.Pool",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Pool.ObjectPool_1.html",
+    "versions": ["2021.1+"]
+  },
+  "VisualElement": {
+    "namespace": "UnityEngine.UIElements",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/UIElements.VisualElement.html",
+    "versions": ["2021.1+"]
+  },
+  "ScriptableObject": {
+    "namespace": "UnityEngine",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/ScriptableObject.html",
+    "versions": ["2021.3+"]
+  },
+  "JsonUtility": {
+    "namespace": "UnityEngine",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/JsonUtility.html",
+    "versions": ["2021.3+"]
+  },
+  "UnityEvent": {
+    "namespace": "UnityEngine.Events",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Events.UnityEvent.html",
+    "versions": ["2021.3+"]
+  },
+  "Application.logMessageReceived": {
+    "namespace": "UnityEngine",
+    "url": "https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Application-logMessageReceived.html",
+    "versions": ["2021.3+"]
+  }
+}

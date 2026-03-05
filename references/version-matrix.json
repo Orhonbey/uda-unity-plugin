@@ -1,0 +1,45 @@
+{
+  "features": {
+    "monobehaviour-lifecycle": {
+      "since": "2017.1",
+      "stable": "2017.1",
+      "notes": "Core lifecycle unchanged since early Unity"
+    },
+    "ui-toolkit-runtime": {
+      "since": "2021.1",
+      "stable": "2022.2",
+      "notes": "Runtime UI support added in 2021.1, stable from 2022.2"
+    },
+    "object-pool-api": {
+      "since": "2021.1",
+      "stable": "2021.1",
+      "class": "UnityEngine.Pool.ObjectPool<T>"
+    },
+    "awaitable": {
+      "since": "6000.0",
+      "stable": "6000.0",
+      "class": "UnityEngine.Awaitable"
+    },
+    "scriptable-objects": {
+      "since": "2017.1",
+      "stable": "2017.1",
+      "notes": "Core feature, stable since early Unity"
+    },
+    "assembly-definitions": {
+      "since": "2017.3",
+      "stable": "2018.1",
+      "notes": "asmdef files for compilation isolation"
+    },
+    "serialization-api": {
+      "since": "2022.1",
+      "stable": "2022.3",
+      "class": "Unity.Serialization"
+    },
+    "ugui": {
+      "since": "2017.1",
+      "stable": "2017.1",
+      "deprecated_by": "ui-toolkit-runtime",
+      "notes": "Legacy runtime UI, still widely used"
+    }
+  }
+}
