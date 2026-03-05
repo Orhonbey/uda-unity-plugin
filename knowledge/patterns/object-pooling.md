@@ -99,6 +99,25 @@ public class ProjectilePool : MonoBehaviour
         _pool.Release(projectile);
     }
 
+    public void WarmUp(int count)
+    {
+        var temp = new Projectile[count];
+        
+        // Get objects from pool (forces creation)
+        for (int i = 0; i < count; i++)
+        {
+            temp[i] = _pool.Get();
+        }
+        
+        // Return them to pool
+        for (int i = 0; i < count; i++)
+        {
+            _pool.Release(temp[i]);
+        }
+        
+        Debug.Log($"Pool warmed up with {count} objects");
+    }
+
     private void OnDestroy()
     {
         _pool?.Clear();
@@ -160,7 +179,7 @@ public class Projectile : MonoBehaviour
         if (_isReleased) return;
 
         // Handle hit logic
-        var damageable = other.GetComponent<IDamageable>();
+        var damageable = other.GetComponent<IDamageable>(); // IDamageable is your custom interface
         damageable?.TakeDamage(10);
 
         ReturnToPool();
@@ -183,35 +202,13 @@ public class Projectile : MonoBehaviour
 
 ### Pool Warm-up
 
+Call `WarmUp()` during initialization to pre-instantiate objects and avoid runtime stutter:
+
 ```csharp
-public class ProjectilePool : MonoBehaviour
+private void Start()
 {
-    private ObjectPool<Projectile> _pool;
-
-    private void Start()
-    {
-        // Pre-warm pool to avoid runtime instantiation stutter
-        WarmUp(20);
-    }
-
-    private void WarmUp(int count)
-    {
-        var temp = new Projectile[count];
-        
-        // Get objects from pool (forces creation)
-        for (int i = 0; i < count; i++)
-        {
-            temp[i] = _pool.Get();
-        }
-        
-        // Return them to pool
-        for (int i = 0; i < count; i++)
-        {
-            _pool.Release(temp[i]);
-        }
-        
-        Debug.Log($"Pool warmed up with {count} objects");
-    }
+    // Pre-warm pool with 20 objects
+    WarmUp(20);
 }
 ```
 
