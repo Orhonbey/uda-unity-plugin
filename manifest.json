@@ -1,0 +1,16 @@
+{
+  "name": "uda-unity",
+  "version": "0.1.0",
+  "engine": "unity",
+  "description": "Unity game development knowledge, workflows, and agents for UDA",
+  "author": "UDA Contributors",
+  "license": "MIT",
+  "minUdaVersion": "0.1.0",
+  "engineVersions": {
+    "min": "2021.3",
+    "max": "6000.1",
+    "tested": ["2022.3 LTS", "6000.0 LTS"]
+  },
+  "i18n": ["en"],
+  "tags": ["unity", "game-dev", "c-sharp"]
+}
