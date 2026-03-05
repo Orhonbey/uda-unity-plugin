@@ -24,7 +24,7 @@ Unity's component-based architecture is the foundation of its game object system
 ## Key Concepts
 
 ### Component Access Methods
-- **GetComponent<T>()**: Returns the component of type T on the same GameObject. Throws if not found (rarely happens, returns null).
+- **GetComponent<T>()**: Returns the component of type T on the same GameObject. Returns null if not found.
 - **TryGetComponent<T>(out T component)**: Null-safe alternative that returns a bool indicating success. Preferred for optional components.
 - **GetComponentInChildren<T>()**: Searches the GameObject and all its children recursively.
 - **GetComponentInParent<T>()**: Searches the GameObject and all its parents up the hierarchy.
@@ -178,7 +178,7 @@ public class PhysicsObject : MonoBehaviour
 
 | Mistake | Problem | Solution |
 |---------|---------|----------|
-| GetComponent in Update | Performance hit every frame (16ms+ at 60fps) | Cache in Awake |
+| GetComponent in Update | Adds unnecessary overhead per frame, especially with many objects | Cache in Awake |
 | Not null-checking | NullReferenceException at runtime | Use null-conditional or TryGetComponent |
 | String-based GetComponent | Fragile, typo-prone, slow | Use generic methods |
 | Assuming component exists | Crash when component is missing | Use TryGetComponent or [RequireComponent] |
