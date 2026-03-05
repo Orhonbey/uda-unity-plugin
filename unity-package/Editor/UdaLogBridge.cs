@@ -9,6 +9,7 @@ public static class UdaLogBridge
     private static readonly string UdaLogsDir;
     private static readonly string LogFilePath;
     private static readonly object WriteLock = new();
+    private const long MaxLogFileSize = 5 * 1024 * 1024; // 5MB
 
     static UdaLogBridge()
     {
@@ -29,6 +30,12 @@ public static class UdaLogBridge
 
         try
         {
+            // Check file size and rotate if needed
+            if (File.Exists(LogFilePath) && new FileInfo(LogFilePath).Length > MaxLogFileSize)
+            {
+                File.Delete(LogFilePath);
+            }
+
             if (!Directory.Exists(UdaLogsDir))
                 Directory.CreateDirectory(UdaLogsDir);
 
@@ -37,7 +44,7 @@ public static class UdaLogBridge
                 time = DateTime.UtcNow.ToString("o"),
                 type = type.ToString(),
                 message = message,
-                stack = string.IsNullOrEmpty(stackTrace) ? null : stackTrace.Trim()
+                stack = string.IsNullOrEmpty(stackTrace) ? "" : stackTrace.Trim()
             };
 
             var json = JsonUtility.ToJson(entry);
