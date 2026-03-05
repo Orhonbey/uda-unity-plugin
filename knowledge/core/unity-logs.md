@@ -41,7 +41,7 @@ Unity provides a comprehensive logging system for debugging and monitoring appli
 - **macOS**: `~/Library/Logs/CompanyName/ProductName/Player.log`
 - **Windows**: `%USERPROFILE%\AppData\LocalLow\CompanyName\ProductName\Player.log`
 - **Linux**: `~/.config/unity3d/CompanyName/ProductName/Player.log`
-- **Android**: `/storage/emulated/0/Android/data/com.company.product/files/`
+- **Android**: Access via `adb logcat -s Unity` (no direct file path, use Application.persistentDataPath for custom logs)
 - **iOS**: Device console via Xcode
 
 ## Code Examples
@@ -53,6 +53,10 @@ using UnityEngine;
 
 public class LogExamples : MonoBehaviour
 {
+    private int playerLevel = 1;
+    private float score = 0f;
+    [SerializeField] private PlayerConfig playerConfig;
+
     private void Start()
     {
         // Informational logging
