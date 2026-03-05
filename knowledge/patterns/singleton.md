@@ -63,7 +63,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                 if (_instance == null)
                 {
                     // Try to find existing instance
-                    _instance = FindFirstObjectByType<T>();
+                    _instance = FindFirstObjectByType<T>(); // Unity 2023.1+. For older versions use: FindObjectOfType<T>()
 
                     if (_instance == null)
                     {
