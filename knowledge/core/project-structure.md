@@ -123,8 +123,8 @@ Assets/
 # Memory captures
 [Mm]emoryCaptures/
 
-# Asset meta data should be tracked, but not these:
-!/[Aa]ssets/**/*.meta
+# Keep .meta files (required for Unity asset tracking)
+# Never add *.meta to gitignore
 
 # Uncomment this for large files (use Git LFS instead)
 # /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
