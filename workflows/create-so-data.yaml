@@ -1,0 +1,25 @@
+name: create-so-data
+description: Create a ScriptableObject data container with CreateAssetMenu
+steps:
+  - id: gather-requirements
+    type: ask
+    name: Gather Requirements
+    questions:
+      - "What data does this SO hold? (e.g. weapon stats, level config, character data)"
+      - "What fields does it need? (name:type pairs, e.g. damage:float, range:float)"
+      - "What CreateAssetMenu path? (e.g. Game/Weapons/WeaponData)"
+      - "Should it be read-only at runtime or mutable?"
+  - id: generate-so
+    type: auto
+    name: Generate ScriptableObject
+    actions:
+      - "Create SO class with [CreateAssetMenu] attribute"
+      - "Add serialized fields for all requested data"
+      - "Add read-only properties if immutable requested"
+      - "Add OnValidate() for editor-time validation"
+  - id: verify
+    type: auto
+    name: Verify
+    actions:
+      - "Ensure proper serialization attributes"
+      - "Ensure CreateAssetMenu path is valid"

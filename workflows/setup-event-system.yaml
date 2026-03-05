@@ -1,0 +1,32 @@
+name: setup-event-system
+description: Set up a ScriptableObject-based event system for decoupled communication
+steps:
+  - id: gather-requirements
+    type: ask
+    name: Gather Requirements
+    questions:
+      - "What events do you need? (e.g. OnPlayerDied, OnScoreChanged, OnLevelComplete)"
+      - "Do any events carry data? (e.g. OnDamage carries float amount)"
+      - "Do you need a generic typed event channel?"
+  - id: generate-channel
+    type: auto
+    name: Generate Event Channel
+    actions:
+      - "Create GameEvent ScriptableObject (void event)"
+      - "Create GameEvent<T> ScriptableObject for typed events if needed"
+      - "Add Raise() method and listener list"
+      - "Add [CreateAssetMenu] for easy creation"
+  - id: generate-listener
+    type: auto
+    name: Generate Event Listener
+    actions:
+      - "Create GameEventListener MonoBehaviour"
+      - "Add SO event reference field"
+      - "Add UnityEvent response field (inspector-configurable)"
+      - "Register/unregister in OnEnable/OnDisable"
+  - id: verify
+    type: auto
+    name: Verify
+    actions:
+      - "Ensure listeners unregister on disable"
+      - "Ensure events can be raised from code and inspector"

@@ -1,0 +1,31 @@
+name: setup-object-pool
+description: Set up an object pooling system using Unity's built-in ObjectPool<T>
+steps:
+  - id: gather-requirements
+    type: ask
+    name: Gather Requirements
+    questions:
+      - "What type of object will be pooled? (e.g. Bullet, VFX, Enemy)"
+      - "What is the initial pool size? (default: 10)"
+      - "What is the maximum pool size? (default: 100)"
+      - "Does the pooled object need a prefab reference?"
+  - id: generate-pool
+    type: auto
+    name: Generate Pool Manager
+    actions:
+      - "Create pool manager using UnityEngine.Pool.ObjectPool<T>"
+      - "Implement createFunc, actionOnGet, actionOnRelease, actionOnDestroy"
+      - "Add warm-up method for pre-instantiation"
+      - "Add Get() and Release() public methods"
+  - id: generate-poolable
+    type: auto
+    name: Generate Poolable Component
+    actions:
+      - "Create IPoolable interface with OnGetFromPool() and OnReturnToPool()"
+      - "Add component to pooled prefab that auto-releases after lifetime"
+  - id: verify
+    type: auto
+    name: Verify
+    actions:
+      - "Ensure pool manager is singleton or scene-scoped"
+      - "Ensure release is called in all code paths"
