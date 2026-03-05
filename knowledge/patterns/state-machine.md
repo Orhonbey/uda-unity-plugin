@@ -258,6 +258,8 @@ public class PlayerStateMachine : MonoBehaviour
 
     private void Update()
     {
+        InputVector = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        IsGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
         _stateMachine.Update();
     }
 
@@ -295,7 +297,7 @@ public class IdleState : IState
             return;
         }
 
-        if (Input.GetButtonDown("Jump") && _player.IsGrounded)
+        if (Input.GetButtonDown("Jump") && _player.IsGrounded) // Note: Uses legacy Input Manager
         {
             _player.ChangeToJumping();
             return;
@@ -308,86 +310,34 @@ public class IdleState : IState
     }
 }
 
-// Running State
+// RunningState - Similar pattern to IdleState
 public class RunningState : IState
 {
     private readonly PlayerStateMachine _player;
-
-    public RunningState(PlayerStateMachine player)
-    {
-        _player = player;
-    }
-
-    public void Enter()
-    {
-        Debug.Log("Entering Running State");
-        // Play run animation
-    }
-
+    public RunningState(PlayerStateMachine player) => _player = player;
+    public void Enter() { /* Play run animation */ }
     public void Execute()
     {
         // Move player based on input
-        
-        // Check transitions
-        if (_player.InputVector.magnitude < 0.1f)
-        {
-            _player.ChangeToIdle();
-            return;
-        }
-
-        if (Input.GetButtonDown("Jump") && _player.IsGrounded)
-        {
-            _player.ChangeToJumping();
-            return;
-        }
+        // Transition to Idle if no input
+        // Transition to Jumping if jump pressed and grounded
     }
-
-    public void Exit()
-    {
-        Debug.Log("Exiting Running State");
-    }
+    public void Exit() { }
 }
 
-// Jumping State
+// JumpingState - Similar pattern to IdleState
 public class JumpingState : IState
 {
     private readonly PlayerStateMachine _player;
     private float _jumpTimer;
-
-    public JumpingState(PlayerStateMachine player)
-    {
-        _player = player;
-    }
-
-    public void Enter()
-    {
-        Debug.Log("Entering Jumping State");
-        _jumpTimer = 0f;
-        // Apply jump force, play jump animation
-    }
-
+    public JumpingState(PlayerStateMachine player) => _player = player;
+    public void Enter() { _jumpTimer = 0f; /* Apply jump force */ }
     public void Execute()
     {
         _jumpTimer += Time.deltaTime;
-
-        // Check for landing
-        if (_player.IsGrounded && _jumpTimer > 0.2f)
-        {
-            if (_player.InputVector.magnitude > 0.1f)
-            {
-                _player.ChangeToRunning();
-            }
-            else
-            {
-                _player.ChangeToIdle();
-            }
-        }
+        // Check for landing, transition to Idle or Running
     }
-
-    public void Exit()
-    {
-        Debug.Log("Exiting Jumping State");
-    }
+    public void Exit() { }
 }
 ```
 
