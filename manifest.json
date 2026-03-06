@@ -1,11 +1,24 @@
 {
   "name": "uda-unity",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "engine": "unity",
+  "uda_version": ">=0.2.0",
   "description": "Unity game development knowledge, workflows, and agents for UDA",
   "author": "UDA Contributors",
   "license": "MIT",
-  "minUdaVersion": "0.1.0",
+  "capabilities": {
+    "logs": {
+      "source": ".uda/logs/console.jsonl",
+      "bridge": "unity-package/Editor/UdaLogBridge.cs",
+      "install_to": "Assets/Editor/"
+    },
+    "knowledge": true,
+    "workflows": true,
+    "agents": true
+  },
+  "knowledge": ["knowledge/**/*.md"],
+  "workflows": ["workflows/**/*.yaml"],
+  "agents": ["agents/**/*.md"],
   "engineVersions": {
     "min": "2021.3",
     "max": "6000.1",
