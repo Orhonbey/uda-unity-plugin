@@ -88,6 +88,16 @@ const checkManifest = () => {
   }
 }
 
+// Engine name from the manifest (installed rule paths contain it); null when unusable.
+const manifestEngine = () => {
+  try {
+    const engine = JSON.parse(read('manifest.json')).engine
+    return typeof engine === 'string' && /^[A-Za-z0-9_-]+$/.test(engine) ? engine : null
+  } catch {
+    return null
+  }
+}
+
 // rules/
 const checkRules = () => {
   if (!exists('rules/core.md')) {
@@ -95,8 +105,14 @@ const checkRules = () => {
   } else {
     checkSize('rules/core.md', CORE_LIMIT)
     const core = read('rules/core.md')
-    for (const file of LIBRARIES) {
-      if (!core.includes(`rules/libraries/${file}`)) problem(`rules/core.md: does not reference rules/libraries/${file}`)
+    const engine = manifestEngine()
+    if (!engine) {
+      problem('rules/core.md: cannot check library references, manifest.json has no usable "engine"')
+    } else {
+      for (const file of LIBRARIES) {
+        const installed = `.uda/rules/${engine}/libraries/${file}`
+        if (!core.includes(installed)) problem(`rules/core.md: does not reference ${installed}`)
+      }
     }
   }
   for (const file of list('rules/profiles')) {
