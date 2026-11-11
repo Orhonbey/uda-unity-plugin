@@ -22,7 +22,7 @@ Before dispatch, decide which files or folders each sub-agent owns: the only pat
 - A sub-agent that should only read gets no list. Every change it makes is then a finding.
 - **Unity:** when a sub-agent creates or moves an asset (a new script included), Unity writes a `.meta` file next to it. Give the sub-agent the folder, or list the `.meta` files too (`Assets/Scripts/Player/PlayerMover.cs.meta`), or the `.meta` shows up as a finding.
 
-Put the list in the sub-agent's instructions, and tell it not to stage, commit, stash or reset.
+Put the list in the sub-agent's instructions, and tell it not to stage, commit, stash, reset or switch branches.
 
 ### 2. Take a snapshot before dispatch
 
@@ -30,7 +30,7 @@ Put the list in the sub-agent's instructions, and tell it not to stage, commit, 
 npx uda-cli agent-check snapshot <file>
 ```
 
-It records HEAD, a fingerprint of the index and a content hash of every dirty path. `<file>` must be outside the work tree, for example in the system temp directory (`"${TMPDIR:-/tmp}/agent-check-<name>.json"`). A path inside the work tree is refused, because the snapshot would show up as a change.
+It records HEAD, the current branch, the stash, a fingerprint of the index and a content hash of every dirty path. `<file>` must be outside the work tree, for example in the system temp directory (`"${TMPDIR:-/tmp}/agent-check-<name>.json"`). A path inside the work tree is refused, because the snapshot would show up as a change.
 
 Take a new snapshot before every dispatch. A snapshot describes the tree at one moment; an old one also reports changes you have already reviewed.
 
@@ -54,7 +54,9 @@ A finding means the work is not accepted yet. Find out what happened, then act:
 
 - `outside-allowed <path>`: a path outside the list changed. Look at the change. It may be the sub-agent overstepping, another sub-agent or person working in the same tree, or Unity writing a file (a `.meta`). Either accept it deliberately (re-run the check with the path added, and say why), or ask the user before you undo a change you did not make.
 - `head-moved`: a commit was made after the snapshot, usually by the sub-agent. Its files are listed as changes. Read the commit. Do not rewrite or drop it without asking the user.
+- `branch-changed`: the checked-out branch is not the one in the snapshot (`"detached"` means a detached HEAD). A switch to a branch at another commit also reports `head-moved` and the files that differ. Find out who switched it and why; switch back only after asking the user if work was done on the other branch.
 - `index-changed`: something was staged or unstaged. Look at `git diff --cached`. Staging is the lead's job, not the sub-agent's.
+- `stash-changed`: a stash was created or dropped. An edit that was stashed no longer shows as a change, so look at `git stash list` and `git stash show -p`. Do not drop or pop a stash without asking the user.
 
 ## Output
 
@@ -64,7 +66,9 @@ A finding means the work is not accepted yet. Find out what happened, then act:
 CHANGED <path>
 FINDING outside-allowed <path>
 FINDING head-moved <old> -> <new>
+FINDING branch-changed "<old>" -> "<new>"
 FINDING index-changed
+FINDING stash-changed
 clean | <n> finding(s)
 ```
 
@@ -84,9 +88,9 @@ A file that was already dirty when you took the snapshot, and has not changed si
 
 | Code | Meaning |
 |---|---|
-| 0 | Clean: nothing changed outside the list, HEAD and index unchanged |
+| 0 | Clean: nothing changed outside the list; HEAD, branch, index and stash unchanged |
 | 2 | Findings: read the `FINDING` lines |
-| 1 | The check could not run: not a git repository, a snapshot file that is missing, unreadable or corrupt, a snapshot from another repository, a snapshot file inside the work tree, an absolute or `..` allowed path, or an allowed path of `.` or an empty string. The error is on stderr |
+| 1 | The check could not run: not a git repository, a snapshot file that is missing, unreadable or corrupt, a snapshot from another repository, a snapshot written by an older uda (another snapshot version: take a new snapshot), a snapshot file inside the work tree, an absolute or `..` allowed path, or an allowed path of `.` or an empty string. The error is on stderr |
 
 Exit 1 is not a pass. Fix the cause and run the check again; if the snapshot is unusable, you cannot check this dispatch, so review the whole `git status` yourself.
 
@@ -96,10 +100,12 @@ Parallel sub-agents share one work tree. Take one snapshot before you dispatch t
 
 The check shows that a path changed, not which sub-agent changed it. A sub-agent that edited a path in another sub-agent's list is not visible as a finding. Read the diff of each owned path with that in mind.
 
-In a Unity project only the lead compiles, once, after the last parallel writer has finished (see the Editor bridge skill, `.claude/skills/uda-unity-editor-bridge/SKILL.md`).
+In a Unity project only the lead compiles, once, after the last parallel writer has finished (see the Editor bridge skill, `.claude/skills/uda-unity-editor-bridge/SKILL.md`). Tell each writer in its dispatch that it runs in parallel with others, so it does not compile; a writer assumes it works alone unless told.
 
 ## Limits
 
 - Parallel sub-agents share one work tree: the command shows that a path outside the list changed, not which agent changed it.
-- Files that git ignores are invisible to it.
+- Files that git ignores are not seen.
+- Changes inside `.git/` (for example `.git/info/exclude` or hooks) are not seen.
+- Files marked assume-unchanged or skip-worktree are not seen.
 - An untracked nested repository or a submodule is reported by its directory path, not file by file.

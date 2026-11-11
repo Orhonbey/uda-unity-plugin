@@ -2,7 +2,7 @@
 title: ScriptableObjects
 since: "2017.1"
 stable: "2017.1"
-deprecated_alternatives: ["XML/JSON config files", "Hard-coded data in MonoBehaviours"]
+deprecated_alternatives: []
 unity_docs:
   - https://docs.unity3d.com/6000.0/Documentation/ScriptReference/ScriptableObject.html
 api_refs:
@@ -303,7 +303,7 @@ public class Item : MonoBehaviour
 ## Best Practices
 
 - **Use for shared data**: Game config, level data, weapon stats - anything used by multiple objects.
-- **Prefer over static/singleton for data**: SOs are editable in the Inspector and don't require runtime initialization.
+- **Data lives in an asset**: SO values are edited in the Inspector and saved with the asset, so no code has to fill them in at runtime; data in static fields or a singleton is set up by code.
 - **Use [System.NonSerialized] for runtime state**: Prevent editor changes from persisting at runtime.
 - **Reset runtime state in OnEnable**: Clear runtime data when entering play mode.
 - **Validate in OnValidate**: Catch configuration errors in the editor.

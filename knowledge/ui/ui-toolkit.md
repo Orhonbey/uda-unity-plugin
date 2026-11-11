@@ -2,7 +2,7 @@
 title: UI Toolkit
 since: "2021.1"
 stable: "2022.2"
-deprecated_alternatives: ["uGUI (Canvas-based UI)"]
+deprecated_alternatives: []
 unity_docs:
   - https://docs.unity3d.com/6000.0/Documentation/Manual/UIElements.html
 api_refs:

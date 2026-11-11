@@ -29,7 +29,7 @@ Architecture rules (managers, singletons, events, dependency injection, folder o
 
 - Pool objects that are created and destroyed repeatedly (projectiles, effects, list items) with `UnityEngine.Pool.ObjectPool<T>`; pool temporary collections with the collection pools in `UnityEngine.Pool`.
 - Reset state on get or release: stop coroutines, unsubscribe events, reset physics, deactivate the GameObject on release.
-- Release each object exactly once and drop your reference to it. Never `Destroy` a pooled object yourself. Pass `collectionCheck: true` during development; it throws on double release (Editor only).
+- Release each object exactly once and drop your reference to it. Never `Destroy` a pooled object yourself. Do not set `collectionCheck` to false: with it on (the default), the pool throws on a double release in the Editor.
 - Call pools from the main thread only. A pool dies with its scene: release active instances in `OnDisable`/`OnDestroy`, and `Clear()` the pool between levels.
 
 ### Unity objects and events
