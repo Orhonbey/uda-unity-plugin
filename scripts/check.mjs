@@ -155,8 +155,22 @@ const checkAgents = () => {
   }
 }
 
+// True when manifest.json declares capabilities.skills === true.
+const manifestDeclaresSkills = () => {
+  try {
+    return JSON.parse(read('manifest.json')).capabilities?.skills === true
+  } catch {
+    return false
+  }
+}
+
 // skills/
 const checkSkills = () => {
+  if (manifestDeclaresSkills()) {
+    const found = list('skills').filter((dir) => isDir(`skills/${dir}`) && exists(`skills/${dir}/SKILL.md`))
+    if (!isDir('skills')) problem('skills/: missing, but manifest.json declares capabilities.skills')
+    else if (found.length === 0) problem('skills/: no skill folder with a SKILL.md, but manifest.json declares capabilities.skills')
+  }
   for (const dir of list('skills')) {
     if (!isDir(`skills/${dir}`)) continue
     const rel = `skills/${dir}/SKILL.md`
