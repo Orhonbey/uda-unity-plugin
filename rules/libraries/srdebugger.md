@@ -25,15 +25,19 @@ Disabling SRDebugger (settings window, **Advanced** tab, or `SRDebugEditor.SetEn
 
 ## Guard against mixed builds
 
-If the project has a scripting symbol that marks test builds, add a guard so a test build with SRDebugger disabled fails to compile:
+Both mixed builds must fail to compile: a test build with SRDebugger disabled, and a release build with SRDebugger still enabled. Add both guards to a script that every build compiles (not an Editor-only folder or assembly):
 
 ```csharp
-#if DISABLE_SRDEBUGGER && PROJECT_TEST_SYMBOL // use the project's real symbol
+#if DISABLE_SRDEBUGGER && PROJECT_TEST_SYMBOL // use the project's real test symbol
 #error "Test build with SRDebugger disabled"
+#endif
+
+#if PROJECT_RELEASE_SYMBOL && !DISABLE_SRDEBUGGER // use the project's real release symbol
+#error "Release build with SRDebugger enabled"
 #endif
 ```
 
-Use the project's existing symbol. If there is none, ask the user before adding one.
+Use the project's existing symbols. If the project has no symbol that marks test builds, or none that marks release builds, ask the user which symbol marks that build type before adding one. Never invent a symbol.
 
 ## Verify
 
