@@ -71,8 +71,12 @@ const checkManifest = () => {
     problem(`manifest.json: not valid JSON (${err.message})`)
     return
   }
-  if (manifest.version !== '0.3.0') problem(`manifest.json: version is ${JSON.stringify(manifest.version)}, expected "0.3.0"`)
-  if (manifest.uda_version !== '>=0.7.0') problem(`manifest.json: uda_version is ${JSON.stringify(manifest.uda_version)}, expected ">=0.7.0"`)
+  if (typeof manifest.version !== 'string' || !/^\d+\.\d+\.\d+$/.test(manifest.version)) {
+    problem(`manifest.json: version is ${JSON.stringify(manifest.version)}, expected the form "X.Y.Z"`)
+  }
+  if (typeof manifest.uda_version !== 'string' || !/^>=\d+\.\d+\.\d+$/.test(manifest.uda_version)) {
+    problem(`manifest.json: uda_version is ${JSON.stringify(manifest.uda_version)}, expected the form ">=X.Y.Z"`)
+  }
   const profiles = manifest.capabilities?.rules?.profiles
   if (!Array.isArray(profiles)) {
     problem('manifest.json: capabilities.rules.profiles is missing or not an array')

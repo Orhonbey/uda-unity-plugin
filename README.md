@@ -103,7 +103,7 @@ Generated in a project as `uda-unity-<name>` (for example `uda-unity-architect`)
 Generated in a project under `.claude/skills/uda-<name>/`:
 
 - `subagent-dispatch` — give each sub-agent an explicit list of files it owns, snapshot the git state before dispatch, and verify with `npx uda-cli agent-check` what it really changed.
-- `unity-editor-bridge` — compile a Unity project and run Edit Mode or Play Mode tests from the shell, through the Unity CLI on Unity 6 or in batch mode on Unity 2022.3.
+- `unity-editor-bridge` — compile a Unity project and run Edit Mode or Play Mode tests from the shell, through the Unity CLI on Unity 6, or in batch mode when no Editor has the project open (the route for Unity 2022.3).
 
 ### Unity Log Bridge
 
@@ -167,7 +167,7 @@ Contributors run this from the repository root before sending a change:
 node scripts/check.mjs
 ```
 
-It needs no dependencies and exits 0 when everything is in order. It checks that `manifest.json` has the expected version and `uda_version` and lists every profile file, that `rules/core.md` and each profile stay within their size limits and core rules reference every library file, that the six agent files exist with the expected tools, that each skill folder has a `SKILL.md` with matching name and a description, and that no shipped content file (under `rules`, `agents`, `skills`, `knowledge` and `workflows`) contains the markers of the block `uda sync` manages.
+It needs no dependencies and exits 0 when everything is in order. It checks that `manifest.json` has a `version` of the form `X.Y.Z` and a `uda_version` of the form `>=X.Y.Z` and lists every profile file, that `rules/core.md` and each profile stay within their size limits and core rules reference every library file, that the six agent files exist with the expected tools, that each skill folder has a `SKILL.md` with matching name and a description, and that no shipped content file (under `rules`, `agents`, `skills`, `knowledge` and `workflows`) contains the markers of the block `uda sync` manages.
 
 ## Contributing
 
