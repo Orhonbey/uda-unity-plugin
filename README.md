@@ -7,7 +7,7 @@ A comprehensive Unity knowledge plugin for [UDA](https://github.com/uda/uda) —
 Install via UDA CLI:
 
 ```bash
-uda plugin add https://github.com/<user>/uda-unity-plugin
+uda plugin add https://github.com/Orhonbey/uda-unity-plugin.git
 ```
 
 Or install from local path:
@@ -117,12 +117,9 @@ Generated in a project under `.claude/skills/uda-<name>/`:
 
 ## Log Bridge Setup
 
-To enable automatic console log capture in Unity:
+`uda plugin add` installs the log bridge for you: it copies `unity-package/Editor/UdaLogBridge.cs` to `Assets/Editor/UdaLogBridge.cs` in your project and records it with the plugin's other files, so `uda plugin update` and removing the plugin handle it too. There is nothing to copy by hand.
 
-1. Copy `unity-package/Editor/UdaLogBridge.cs` to your Unity project:
-   ```
-   Assets/Editor/UdaLogBridge.cs
-   ```
+1. Open the project in Unity so the Editor compiles the script.
 
 2. The script will automatically:
    - Create `.uda/logs/` directory in your project root
@@ -141,18 +138,21 @@ uda search "how to cache GetComponent"
 uda search "singleton pattern"
 ```
 
-### Sync Plugin
+### Update the Plugin
 
 ```bash
-uda sync  # Pull latest knowledge updates
+uda plugin update unity  # Pull the plugin's latest version
+uda sync                 # Regenerate the AI tool files from what is installed
 ```
 
-### Run Workflows
+### Use Workflows
 
-```bash
-uda workflow run create-monobehaviour
-uda workflow run setup-object-pool
-uda workflow run create-ui-panel
+No CLI command runs a workflow. `uda sync` generates each workflow as a slash command in the project, `.claude/commands/uda/<name>.md`, which you run in Claude Code as `/uda:<name>`:
+
+```
+/uda:create-monobehaviour
+/uda:setup-object-pool
+/uda:create-ui-panel
 ```
 
 ### Use Agents
