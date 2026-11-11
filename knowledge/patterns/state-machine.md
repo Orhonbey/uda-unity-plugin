@@ -19,7 +19,9 @@ last_verified: "2026-03-05"
 
 ## Overview
 
-Finite State Machines (FSM) manage complex behavior by breaking it into discrete states with defined transitions. Essential for AI, player controllers, UI flow, and game state management. Start with simple enum-based FSM, upgrade to class-based when complexity demands it.
+Finite State Machines (FSM) manage complex behavior by breaking it into discrete states with defined transitions. Used for AI, player controllers, UI flow, and game state management. An enum-based FSM is the simplest form; a class-based FSM scales to more complex states.
+
+Whether this pattern is used in a project is decided by the project's architecture profile (see the selected profile in `CLAUDE.md` / `.uda/rules/unity/profiles/`), not by this file.
 
 ## Key Concepts
 
@@ -343,9 +345,9 @@ public class JumpingState : IState
 
 ## Best Practices
 
-- **Start with enum-based**: Simple switch FSM is fine for 2-4 states. Don't over-engineer.
-- **Upgrade to class-based when needed**: When states have complex logic or need inheritance.
-- **Keep transitions explicit**: Avoid implicit state changes; make all transitions visible.
+- **Enum-based**: A switch FSM covers 2-4 states with little code.
+- **Class-based**: Suits states with complex logic or inheritance.
+- **Keep transitions explicit**: Implicit state changes are hard to trace; make all transitions visible.
 - **Use Enter/Exit for setup/cleanup**: Initialize state in Enter, clean up in Exit.
 - **Consider hierarchical FSM**: For complex AI, states can have sub-states.
 
@@ -361,8 +363,8 @@ public class JumpingState : IState
 
 ## When to Use Each Approach
 
-| Approach | Best For | Avoid When |
-|----------|----------|------------|
+| Approach | Best For | Less Suited When |
+|----------|----------|------------------|
 | Enum + Switch | Simple AI (2-4 states), UI states | More than 5 states, complex transitions |
 | Class-based FSM | Player controllers, complex AI | Very simple 2-state systems |
 | Animator FSM | Animation-driven states | Logic-heavy states without animation |

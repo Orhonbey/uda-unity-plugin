@@ -19,7 +19,9 @@ last_verified: "2026-03-05"
 
 ## Overview
 
-The Singleton pattern ensures a class has only one instance and provides global access to it. In Unity, this is commonly used for managers (GameManager, AudioManager, UIManager) that need to persist across scenes. However, use sparingly as it creates tight coupling.
+The Singleton pattern ensures a class has only one instance and provides global access to it. In Unity, this is commonly used for managers (GameManager, AudioManager, UIManager) that need to persist across scenes. A single instance is reachable from anywhere, so dependencies on it are not visible in a class's constructor or fields.
+
+Whether this pattern is used in a project is decided by the project's architecture profile (see the selected profile in `CLAUDE.md` / `.uda/rules/unity/profiles/`), not by this file.
 
 ## Key Concepts
 
@@ -63,7 +65,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                 if (_instance == null)
                 {
                     // Try to find existing instance
-                    _instance = FindFirstObjectByType<T>(); // Unity 2023.1+. For older versions use: FindObjectOfType<T>()
+                    _instance = FindFirstObjectByType<T>(); // Documented in the Script Reference for 2021.3, 2022.3 and 6000.0. Older equivalent: FindObjectOfType<T>()
 
                     if (_instance == null)
                     {
@@ -226,12 +228,12 @@ public class LevelManager : SceneSingleton<LevelManager>
 
 ## Best Practices
 
-- **Use sparingly**: Singletons create hidden dependencies. Consider alternatives like ScriptableObject events or dependency injection.
+- **Hidden dependencies**: Code that calls `Instance` has a dependency that is not visible in its constructor or fields. ScriptableObject events and dependency injection make dependencies explicit (see Alternatives below).
 - **Handle application quitting**: The `_applicationIsQuitting` flag prevents accessing destroyed instances during shutdown.
 - **Handle scene loading**: Use `DontDestroyOnLoad` only when persistence is truly needed.
 - **Destroy duplicates**: Always handle duplicate instances created by scene loading.
 - **Consider thread safety**: Use locking if accessing from multiple threads.
-- **Prefer composition**: Instead of `GameManager.Instance.DoSomething()`, use events or injected dependencies.
+- **Direct access vs. events**: `GameManager.Instance.DoSomething()` is a direct call; events or injected dependencies reach the same code without naming the instance.
 
 ## Common Mistakes
 
@@ -246,7 +248,7 @@ public class LevelManager : SceneSingleton<LevelManager>
 
 ## Alternatives to Singleton
 
-Consider these patterns before using Singleton:
+Other ways to reach shared state or services:
 - **ScriptableObject Events**: Decoupled communication without global state
 - **Service Locator**: Central registry with better testability
 - **Dependency Injection**: Explicit dependencies passed to constructors

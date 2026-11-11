@@ -19,7 +19,9 @@ last_verified: "2026-03-05"
 
 ## Overview
 
-Event-driven architecture decouples systems by allowing objects to communicate without direct references. Essential for scalable Unity projects, events enable cross-scene communication, UI updates, and reactive game systems. Choose between C# events (fast, code-only), UnityEvent (inspector-friendly), or ScriptableObject channels (cross-scene, modular).
+Event-driven architecture decouples systems by allowing objects to communicate without direct references. Events enable cross-scene communication, UI updates, and reactive game systems. Choose between C# events (fast, code-only), UnityEvent (inspector-friendly), or ScriptableObject channels (cross-scene, modular).
+
+Whether this pattern is used in a project is decided by the project's architecture profile (see the selected profile in `CLAUDE.md` / `.uda/rules/unity/profiles/`), not by this file.
 
 ## Key Concepts
 

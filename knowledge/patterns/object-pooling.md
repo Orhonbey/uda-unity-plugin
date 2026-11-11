@@ -19,7 +19,9 @@ last_verified: "2026-03-05"
 
 ## Overview
 
-Object pooling reduces garbage collection (GC) pressure by reusing objects instead of repeatedly instantiating and destroying them. Essential for performance-critical scenarios like bullet hells, particle effects, and frequently spawned enemies. Unity provides a built-in `ObjectPool<T>` class since version 2021.1.
+Object pooling reduces garbage collection (GC) pressure by reusing objects instead of repeatedly instantiating and destroying them. Used in performance-critical scenarios like bullet hells, particle effects, and frequently spawned enemies. Unity provides a built-in `ObjectPool<T>` class since version 2021.1.
+
+Whether this pattern is used in a project is decided by the project's architecture profile (see the selected profile in `CLAUDE.md` / `.uda/rules/unity/profiles/`), not by this file.
 
 ## Key Concepts
 
