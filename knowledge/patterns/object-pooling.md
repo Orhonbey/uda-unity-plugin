@@ -2,7 +2,7 @@
 title: Object Pooling
 since: "2021.1"
 stable: "2021.1"
-deprecated_alternatives: ["Custom pool implementations"]
+deprecated_alternatives: []
 unity_docs:
   - https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Pool.ObjectPool_1.html
 api_refs:

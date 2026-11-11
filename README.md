@@ -22,7 +22,7 @@ This plugin requires `uda-cli` 0.7.0 or newer (`uda_version` in `manifest.json` 
 
 ## What's Included
 
-### Knowledge Files (11)
+### Knowledge Files (12)
 
 Organized into categories for easy discovery:
 
@@ -157,11 +157,7 @@ uda workflow run create-ui-panel
 
 ### Use Agents
 
-```bash
-uda agent unity-architect  # Ask architecture questions
-uda agent unity-debugger   # Debug errors
-uda agent unity-reviewer   # Review code
-```
+No CLI command runs an agent. After `uda sync`, the agents exist in the project as `.claude/agents/uda-unity-<name>.md` (for example `.claude/agents/uda-unity-architect.md`), and the AI tool dispatches them by those names.
 
 ## Checking the Plugin
 
@@ -171,7 +167,7 @@ Contributors run this from the repository root before sending a change:
 node scripts/check.mjs
 ```
 
-It needs no dependencies and exits 0 when everything is in order. It checks that `manifest.json` has the expected version and `uda_version` and lists every profile file, that `rules/core.md` and each profile stay within their size limits and core rules reference every library file, that the six agent files exist with the expected tools, that each skill folder has a `SKILL.md` with matching name and a description, and that no file contains the markers of the block `uda sync` manages.
+It needs no dependencies and exits 0 when everything is in order. It checks that `manifest.json` has the expected version and `uda_version` and lists every profile file, that `rules/core.md` and each profile stay within their size limits and core rules reference every library file, that the six agent files exist with the expected tools, that each skill folder has a `SKILL.md` with matching name and a description, and that no shipped content file (under `rules`, `agents`, `skills`, `knowledge` and `workflows`) contains the markers of the block `uda sync` manages.
 
 ## Contributing
 

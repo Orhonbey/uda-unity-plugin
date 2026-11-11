@@ -2,7 +2,7 @@
 title: Singleton Pattern
 since: "2017.1"
 stable: "2017.1"
-deprecated_alternatives: ["ScriptableObject architecture", "Service Locator", "Dependency Injection"]
+deprecated_alternatives: []
 unity_docs:
   - https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Object.DontDestroyOnLoad.html
 api_refs:
@@ -226,9 +226,9 @@ public class LevelManager : SceneSingleton<LevelManager>
 }
 ```
 
-## Best Practices
+## Costs and Trade-offs
 
-- **Hidden dependencies**: Code that calls `Instance` has a dependency that is not visible in its constructor or fields. ScriptableObject events and dependency injection make dependencies explicit (see Alternatives below).
+- **Hidden dependencies**: Code that calls `Instance` has a dependency that is not visible in its constructor or fields. ScriptableObject events and dependency injection make dependencies explicit (see Other Ways to Reach Shared State below).
 - **Handle application quitting**: The `_applicationIsQuitting` flag prevents accessing destroyed instances during shutdown.
 - **Handle scene loading**: Use `DontDestroyOnLoad` only when persistence is truly needed.
 - **Destroy duplicates**: Always handle duplicate instances created by scene loading.
@@ -243,13 +243,16 @@ public class LevelManager : SceneSingleton<LevelManager>
 | Accessing during/after OnDestroy | NullReferenceException | Check `_applicationIsQuitting` flag |
 | Not using DontDestroyOnLoad | Singleton destroyed on scene change | Call DontDestroyOnLoad for persistent singletons |
 | Heavy logic in Instance getter | Performance issues | Keep getter lightweight |
-| Singletons calling other singletons | Circular dependency risk | Use events for cross-manager communication |
-| Testing difficulties | Hard to mock for unit tests | Use interfaces or dependency injection |
 
-## Alternatives to Singleton
+### Other facts
 
-Other ways to reach shared state or services:
+- **Initialization order**: When one singleton reads another in `Awake`, the result depends on which `Awake` runs first. Reading other instances in `Start`, or through an explicit initialization step, removes the dependence.
+- **Testing**: Static access cannot be replaced in a test without an interface or a test-only setter.
+
+## Other Ways to Reach Shared State
+
+These approaches exist alongside a single instance:
 - **ScriptableObject Events**: Decoupled communication without global state
-- **Service Locator**: Central registry with better testability
+- **Service Locator**: Central registry that resolves services by type
 - **Dependency Injection**: Explicit dependencies passed to constructors
 - **Zenject/Extenject**: Full DI framework for Unity

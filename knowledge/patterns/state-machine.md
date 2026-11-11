@@ -2,7 +2,7 @@
 title: State Machine
 since: "2017.1"
 stable: "2017.1"
-deprecated_alternatives: ["Unity Animator state machines for AI"]
+deprecated_alternatives: []
 unity_docs:
   - https://docs.unity3d.com/6000.0/Documentation/ScriptReference/StateMachineBehaviour.html
 api_refs:

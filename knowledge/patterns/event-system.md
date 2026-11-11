@@ -308,8 +308,8 @@ public class UIManager : MonoBehaviour
 
 ## Best Practices
 
-- **SO events for cross-scene**: Use ScriptableObject channels when objects may be in different scenes.
-- **C# events for internal logic**: Use Action/event within tightly coupled systems for performance.
+- **SO events across scenes**: ScriptableObject channels can connect objects that live in different scenes.
+- **C# events within a system**: Action/event is the fastest option for communication inside one system.
 - **Always unsubscribe**: Unregister in OnDisable/OnDestroy to prevent memory leaks.
 - **Null-conditional invoke**: Use `?.Invoke()` pattern to avoid null checks.
 - **UnityEvent for designer wiring**: Expose UnityEvents for things designers need to hook up.
