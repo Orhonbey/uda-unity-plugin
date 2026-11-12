@@ -9,20 +9,21 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const problems = []
 const problem = (message) => problems.push(message)
 
-const MARKER_BEGIN = '<!-- uda:begin -->'
-const MARKER_END = '<!-- uda:end -->'
 const CORE_LIMIT = 6144
 const PROFILE_LIMIT = 2048
 const LIBRARIES = ['addressables.md', 'srdebugger.md', 'remote-config.md', 'input-system.md', 'testing.md']
 const READ_ONLY = 'Read, Grep, Glob'
 const AGENTS = {
-  'unity-architect': READ_ONLY,
-  'unity-debugger': READ_ONLY,
-  'unity-reviewer': READ_ONLY,
-  'unity-performance': READ_ONLY,
-  'unity-verifier': 'Read, Grep, Glob, Bash',
-  'unity-writer': 'Read, Grep, Glob, Edit, Write, Bash'
+  'uda-unity-architect': READ_ONLY,
+  'uda-unity-debugger': READ_ONLY,
+  'uda-unity-reviewer': READ_ONLY,
+  'uda-unity-performance': READ_ONLY,
+  'uda-unity-verifier': 'Read, Grep, Glob, Bash',
+  'uda-unity-writer': 'Read, Grep, Glob, Edit, Write, Bash'
 }
+// Text left over from the uda CLI era; shipped content must not mention it.
+const STALE = ['.uda/', 'uda-cli', 'uda sync', 'uda config', 'uda plugin']
+const CONTENT_DIRS = ['rules', 'agents', 'skills', 'commands']
 
 const abs = (rel) => join(root, rel)
 const exists = (rel) => existsSync(abs(rel))
@@ -62,46 +63,6 @@ const checkSize = (rel, limit) => {
   if (size > limit) problem(`${rel}: ${size} bytes exceeds the ${limit} byte limit`)
 }
 
-// manifest.json
-const checkManifest = () => {
-  let manifest
-  try {
-    manifest = JSON.parse(read('manifest.json'))
-  } catch (err) {
-    problem(`manifest.json: not valid JSON (${err.message})`)
-    return
-  }
-  if (typeof manifest.version !== 'string' || !/^\d+\.\d+\.\d+$/.test(manifest.version)) {
-    problem(`manifest.json: version is ${JSON.stringify(manifest.version)}, expected the form "X.Y.Z"`)
-  }
-  if (typeof manifest.uda_version !== 'string' || !/^>=\d+\.\d+\.\d+$/.test(manifest.uda_version)) {
-    problem(`manifest.json: uda_version is ${JSON.stringify(manifest.uda_version)}, expected the form ">=X.Y.Z"`)
-  }
-  const profiles = manifest.capabilities?.rules?.profiles
-  if (!Array.isArray(profiles)) {
-    problem('manifest.json: capabilities.rules.profiles is missing or not an array')
-    return
-  }
-  for (const name of profiles) {
-    if (!exists(`rules/profiles/${name}.md`)) problem(`rules/profiles/${name}.md: listed in manifest but missing`)
-  }
-  for (const file of list('rules/profiles')) {
-    if (!file.endsWith('.md') || !profiles.includes(file.slice(0, -3))) {
-      problem(`rules/profiles/${file}: not listed in manifest capabilities.rules.profiles`)
-    }
-  }
-}
-
-// Engine name from the manifest (installed rule paths contain it); null when unusable.
-const manifestEngine = () => {
-  try {
-    const engine = JSON.parse(read('manifest.json')).engine
-    return typeof engine === 'string' && /^[A-Za-z0-9_-]+$/.test(engine) ? engine : null
-  } catch {
-    return null
-  }
-}
-
 // rules/
 const checkRules = () => {
   if (!exists('rules/core.md')) {
@@ -109,14 +70,9 @@ const checkRules = () => {
   } else {
     checkSize('rules/core.md', CORE_LIMIT)
     const core = read('rules/core.md')
-    const engine = manifestEngine()
-    if (!engine) {
-      problem('rules/core.md: cannot check library references, manifest.json has no usable "engine"')
-    } else {
-      for (const file of LIBRARIES) {
-        const installed = `.uda/rules/${engine}/libraries/${file}`
-        if (!core.includes(installed)) problem(`rules/core.md: does not reference ${installed}`)
-      }
+    for (const file of LIBRARIES) {
+      const linked = `.claude/uda/rules/libraries/${file}`
+      if (!core.includes(linked)) problem(`rules/core.md: does not reference ${linked}`)
     }
   }
   for (const file of list('rules/profiles')) {
@@ -159,21 +115,10 @@ const checkAgents = () => {
   }
 }
 
-// True when manifest.json declares capabilities.skills === true.
-const manifestDeclaresSkills = () => {
-  try {
-    return JSON.parse(read('manifest.json')).capabilities?.skills === true
-  } catch {
-    return false
-  }
-}
-
 // skills/
 const checkSkills = () => {
-  if (manifestDeclaresSkills()) {
-    const found = list('skills').filter((dir) => isDir(`skills/${dir}`) && exists(`skills/${dir}/SKILL.md`))
-    if (!isDir('skills')) problem('skills/: missing, but manifest.json declares capabilities.skills')
-    else if (found.length === 0) problem('skills/: no skill folder with a SKILL.md, but manifest.json declares capabilities.skills')
+  if (list('skills').filter((dir) => exists(`skills/${dir}/SKILL.md`)).length === 0) {
+    problem('skills/: no skill folder with a SKILL.md')
   }
   for (const dir of list('skills')) {
     if (!isDir(`skills/${dir}`)) continue
@@ -193,23 +138,46 @@ const checkSkills = () => {
   }
 }
 
-// No markers in shipped content
-const checkMarkers = () => {
-  for (const dir of ['rules', 'agents', 'skills', 'knowledge', 'workflows']) {
+// commands/
+const checkCommands = () => {
+  const files = list('commands').filter((f) => f.endsWith('.md'))
+  if (!files.includes('uda-new-project.md')) problem('commands/uda-new-project.md: missing')
+  for (const file of files) {
+    const fm = frontmatter(read(`commands/${file}`))
+    if (!fm || !fm.description) problem(`commands/${file}: frontmatter is missing "description"`)
+  }
+}
+
+// No leftovers from the uda CLI in shipped content
+const checkStale = () => {
+  for (const dir of CONTENT_DIRS) {
     for (const rel of walk(dir)) {
       const text = readFileSync(abs(rel), 'utf8')
-      for (const marker of [MARKER_BEGIN, MARKER_END]) {
-        if (text.includes(marker)) problem(`${rel}: contains the marker ${marker}`)
+      for (const word of STALE) {
+        if (text.includes(word)) problem(`${rel}: mentions "${word}", which no longer exists`)
+      }
+      // Rules are read from the project's copy, never from the linked repository
+      if (dir !== 'commands' && text.includes('~/.claude/uda/rules/')) {
+        problem(`${rel}: points at ~/.claude/uda/rules/; use the project copy .claude/uda/rules/`)
       }
     }
   }
 }
 
-checkManifest()
+// scripts/
+const checkScripts = () => {
+  for (const rel of ['scripts/bootstrap.sh', 'scripts/copy-rules.sh', 'scripts/agent-check.mjs']) {
+    if (!exists(rel)) problem(`${rel}: missing`)
+    else if ((statSync(abs(rel)).mode & 0o111) === 0) problem(`${rel}: not executable`)
+  }
+}
+
 checkRules()
 checkAgents()
 checkSkills()
-checkMarkers()
+checkCommands()
+checkStale()
+checkScripts()
 
 for (const message of problems) console.log(message)
 console.log(problems.length === 0 ? 'OK: no problems found' : `FAIL: ${problems.length} problem(s) found`)

@@ -1,5 +1,5 @@
 ---
-name: unity-editor-bridge
+name: uda-unity-editor-bridge
 description: Compile a Unity project and run its Edit Mode or Play Mode tests from the shell, through the Unity CLI and the Pipeline package on Unity 6, or in batch mode when no Editor has the project open (the route for Unity 2022.3). Use when you must check that C# changes compile, run Unity tests, read a compile or test result, or the Editor cannot be reached or is in Safe Mode.
 ---
 

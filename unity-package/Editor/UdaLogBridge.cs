@@ -16,8 +16,8 @@ public static class UdaLogBridge
         var projectRoot = Directory.GetParent(Application.dataPath)?.FullName;
         if (projectRoot == null) return;
 
-        UdaLogsDir = Path.Combine(projectRoot, ".uda", "logs");
-        LogFilePath = Path.Combine(UdaLogsDir, "console.jsonl");
+        UdaLogsDir = Path.Combine(projectRoot, "Logs");
+        LogFilePath = Path.Combine(UdaLogsDir, "uda-console.jsonl");
 
         Application.logMessageReceived += OnLogMessageReceived;
         EditorApplication.quitting += OnQuitting;

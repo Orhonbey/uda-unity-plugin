@@ -1,13 +1,13 @@
 ---
-name: subagent-dispatch
-description: Give each sub-agent an explicit list of the files it owns, snapshot the git state before dispatch, and after it returns verify from git what it really changed with npx uda-cli agent-check. Use when you dispatch, delegate to or run sub-agents (one or several in parallel) that may change files, and before you accept a sub-agent's work.
+name: uda-subagent-dispatch
+description: Give each sub-agent an explicit list of the files it owns, snapshot the git state before dispatch, and after it returns verify from git what it really changed with the agent-check script. Use when you dispatch, delegate to or run sub-agents (one or several in parallel) that may change files, and before you accept a sub-agent's work.
 ---
 
 # Sub-agent dispatch
 
-A sub-agent's reply is its own account of what it did. A file it changed and did not mention stays invisible until something breaks. Read the change from git instead, and check it against the list of files the sub-agent was allowed to change. `npx uda-cli agent-check` does the comparison.
+A sub-agent's reply is its own account of what it did. A file it changed and did not mention stays invisible until something breaks. Read the change from git instead, and check it against the list of files the sub-agent was allowed to change. `agent-check.mjs` does the comparison.
 
-Requirements: the project is a git repository and the tool runs as `npx uda-cli`. Run every command below from inside the repository; the tool finds the repository from the current directory.
+Requirements: the project is a git repository, Node 18 or newer is installed, and the script is at `~/.claude/uda/scripts/agent-check.mjs` (the UDA bootstrap links it there). Run every command below from inside the repository; the tool finds the repository from the current directory.
 
 ## The procedure
 
@@ -27,7 +27,7 @@ Put the list in the sub-agent's instructions, and tell it not to stage, commit, 
 ### 2. Take a snapshot before dispatch
 
 ```sh
-npx uda-cli agent-check snapshot <file>
+node ~/.claude/uda/scripts/agent-check.mjs snapshot <file>
 ```
 
 It records HEAD, the current branch, the stash, a fingerprint of the index and a content hash of every dirty path. `<file>` must be outside the work tree, for example in the system temp directory (`"${TMPDIR:-/tmp}/agent-check-<name>.json"`). A path inside the work tree is refused, because the snapshot would show up as a change.
@@ -39,10 +39,10 @@ Take a new snapshot before every dispatch. A snapshot describes the tree at one 
 When the sub-agent has returned:
 
 ```sh
-npx uda-cli agent-check check <file> <allowed-path>...
+node ~/.claude/uda/scripts/agent-check.mjs check <file> <allowed-path>...
 ```
 
-Pass the same paths you gave the sub-agent. For a read-only sub-agent, pass no paths: `npx uda-cli agent-check check <file>`.
+Pass the same paths you gave the sub-agent. For a read-only sub-agent, pass no paths: `node ~/.claude/uda/scripts/agent-check.mjs check <file>`.
 
 ### 4. Read the change from git
 
@@ -100,7 +100,7 @@ Parallel sub-agents share one work tree. Take one snapshot before you dispatch t
 
 The check shows that a path changed, not which sub-agent changed it. A sub-agent that edited a path in another sub-agent's list is not visible as a finding. Read the diff of each owned path with that in mind.
 
-In a Unity project only the lead compiles, once, after the last parallel writer has finished (see the Editor bridge skill, `.claude/skills/uda-unity-editor-bridge/SKILL.md`). Tell each writer in its dispatch that it runs in parallel with others, so it does not compile; a writer assumes it works alone unless told.
+In a Unity project only the lead compiles, once, after the last parallel writer has finished (see the Editor bridge skill, `~/.claude/skills/uda-unity-editor-bridge/SKILL.md`). Tell each writer in its dispatch that it runs in parallel with others, so it does not compile; a writer assumes it works alone unless told.
 
 ## Limits
 

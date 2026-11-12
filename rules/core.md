@@ -4,7 +4,7 @@ These rules apply to every C# script you write or change in this Unity project. 
 
 ### Architecture
 
-Architecture rules (managers, singletons, events, dependency injection, folder ownership) come from the selected profile under `## Architecture Profile` in this file. If no profile is selected, follow the patterns the project already uses and do not introduce a new one.
+Architecture rules (managers, singletons, events, dependency injection, folder ownership) come from the profile that the project's `CLAUDE.md` imports from `.claude/uda/rules/profiles/`. If no profile is selected, follow the patterns the project already uses and do not introduce a new one.
 
 ### Naming and files
 
@@ -53,8 +53,8 @@ Architecture rules (managers, singletons, events, dependency injection, folder o
 
 Before writing code that uses one of these libraries, read its file:
 
-- `.uda/rules/unity/libraries/addressables.md`: every load and instantiate must be released, or the asset stays in memory.
-- `.uda/rules/unity/libraries/srdebugger.md`: on in test builds, off in release builds; every call to it must compile with `DISABLE_SRDEBUGGER` defined.
-- `.uda/rules/unity/libraries/remote-config.md`: a missing key silently returns the default, so never rename or delete a key a shipped build reads.
-- `.uda/rules/unity/libraries/input-system.md`: actions outside the project-wide asset start disabled and do nothing until `Enable()`.
-- `.uda/rules/unity/libraries/testing.md`: test assemblies cannot reference `Assembly-CSharp`; code under test needs its own assembly definition.
+- `.claude/uda/rules/libraries/addressables.md`: every load and instantiate must be released, or the asset stays in memory.
+- `.claude/uda/rules/libraries/srdebugger.md`: on in test builds, off in release builds; every call to it must compile with `DISABLE_SRDEBUGGER` defined.
+- `.claude/uda/rules/libraries/remote-config.md`: a missing key silently returns the default, so never rename or delete a key a shipped build reads.
+- `.claude/uda/rules/libraries/input-system.md`: actions outside the project-wide asset start disabled and do nothing until `Enable()`.
+- `.claude/uda/rules/libraries/testing.md`: test assemblies cannot reference `Assembly-CSharp`; code under test needs its own assembly definition.

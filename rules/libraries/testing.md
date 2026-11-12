@@ -16,7 +16,7 @@ Read this before writing, changing or running tests in a Unity project. Checked 
 - A test fails when Unity logs an error, assert or exception that the test did not expect. Call `LogAssert.Expect(LogType.Error, "message")` before the code that logs it. Never set `LogAssert.ignoreFailingMessages = true` to make a failing test pass.
 - Destroy every GameObject a test creates, in teardown, so tests don't affect each other.
 - Name tests `Method_Condition_ExpectedResult`, unless the project uses another pattern.
-- For input tests, follow `.uda/rules/unity/libraries/input-system.md`.
+- For input tests, follow `.claude/uda/rules/libraries/input-system.md`.
 
 ## Running tests
 
